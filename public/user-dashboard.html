@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My requests - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header id="nav"></header>
+<main>
+  <h1>My disposal requests</h1>
+  <div class="card" id="new-card">
+    <h2 style="margin-top:0">New request</h2>
+    <div id="center-info" class="muted">No center selected. <a href="/">Find a center</a> first, then choose "Request disposal".</div>
+    <form id="form" style="display:none" onsubmit="return false">
+      <div id="msg"></div>
+      <div class="row">
+        <div><label for="category">Category</label><select id="category"></select></div>
+        <div><label for="quantity">Quantity</label><input id="quantity" type="number" min="1" value="1"></div>
+        <div><label for="mode">Pickup or drop-off</label><select id="mode"></select></div>
+      </div>
+      <div id="addr-wrap" style="display:none"><label for="pickup_address">Pickup address</label><input id="pickup_address"></div>
+      <label for="description">Details (optional)</label><textarea id="description" placeholder="e.g. 2 old Android phones, 1 laptop battery"></textarea>
+      <div class="actions"><button id="submit">Submit request</button></div>
+    </form>
+  </div>
+  <h2>Request history</h2>
+  <div id="list"></div>
+</main>
+<script src="/js/api.js"></script>
+<script>
+const user = requireRole('user'); renderNav();
+const centerId = new URLSearchParams(location.search).get('center');
+
+async function loadCenter() {
+  if (!centerId) return;
+  try {
+    const c = await api('/centers/' + centerId);
+    document.getElementById('center-info').innerHTML = `<strong>${esc(c.name)}</strong><br><span class="muted">${esc(c.address)}</span>`;
+    category.innerHTML = c.categories.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('');
+    const modes = [];
+    if (c.dropoff_available) modes.push('<option value="dropoff">Drop-off</option>');
+    if (c.pickup_available) modes.push('<option value="pickup">Pickup</option>');
+    mode.innerHTML = modes.join('');
+    document.getElementById('form').style.display = 'block';
+    toggleAddr();
+  } catch (e) { document.getElementById('center-info').textContent = e.message; }
+}
+function toggleAddr() { document.getElementById('addr-wrap').style.display = mode.value === 'pickup' ? 'block' : 'none'; }
+mode.onchange = toggleAddr;
+
+document.getElementById('submit').onclick = async () => {
+  try {
+    await api('/requests', { method: 'POST', body: {
+      center_id: centerId, category_id: Number(category.value), quantity: Number(quantity.value),
+      mode: mode.value, pickup_address: pickup_address.value, description: description.value } });
+    showMsg('msg', 'Request submitted. Track its status below.', 'ok');
+    description.value = ''; loadList();
+  } catch (e) { showMsg('msg', e.message); }
+};
+
+async function loadList() {
+  const rows = await api('/requests/mine');
+  document.getElementById('list').innerHTML = rows.length ? `<div class="table-wrap"><table><tr><th>Center</th><th>Category</th><th>Qty</th><th>Mode</th><th>Status</th><th>Updated</th></tr>${
+    rows.map((r) => `<tr><td>${esc(r.centers.name)}</td><td>${esc(r.waste_categories.name)}</td><td>${r.quantity}</td><td>${esc(r.mode)}</td><td>${statusBadge(r.status)}</td><td>${fmtDate(r.updated_at)}</td></tr>`).join('')
+  }</table></div>` : '<div class="card muted">No requests yet.</div>';
+}
+loadCenter(); loadList().catch((e) => showMsg('msg', e.message));
+</script>
+</body>
+</html>

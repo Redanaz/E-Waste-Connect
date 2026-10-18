@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Register - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header id="nav"></header>
+<main class="auth">
+  <h1>Create an account</h1>
+  <div class="card">
+    <div id="msg"></div>
+    <label for="role">I am a</label>
+    <select id="role"><option value="user">User (I have e-waste to dispose of)</option><option value="center_admin">Recycling center admin</option></select>
+    <label for="name">Name</label><input id="name" autocomplete="name">
+    <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+    <label for="password">Password (min 6 characters)</label><input id="password" type="password" autocomplete="new-password">
+    <div class="actions"><button id="go">Register</button></div>
+    <p class="muted">Already registered? <a href="/login.html">Log in</a></p>
+  </div>
+</main>
+<script src="/js/api.js"></script>
+<script>
+renderNav();
+document.getElementById('go').onclick = async () => {
+  try {
+    const d = await api('/auth/register', { method: 'POST', body: {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      password: document.getElementById('password').value,
+      role: document.getElementById('role').value
+    } });
+    saveSession(d.token, d.user);
+    location.href = dashboardFor(d.user.role);
+  } catch (e) { showMsg('msg', e.message); }
+};
+</script>
+</body>
+</html>

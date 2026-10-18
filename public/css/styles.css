@@ -1,0 +1,31 @@
+:root{--green:#1f7a4d;--green-dark:#145a38;--bg:#f5f8f6;--text:#1c2a22;--muted:#5c6b62;--border:#d6e0da;--danger:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+header.nav{background:var(--green);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;flex-wrap:wrap;gap:8px}
+header.nav a{color:#fff;text-decoration:none;margin-left:16px}
+header.nav .brand{font-weight:600;font-size:18px;margin-left:0}
+main{max-width:1000px;margin:24px auto;padding:0 16px}
+h1{font-size:24px;margin:0 0 8px}h2{font-size:18px;margin:24px 0 8px}
+.muted{color:var(--muted)}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+label{display:block;font-size:14px;margin:10px 0 4px;color:var(--muted)}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;background:#fff}
+textarea{min-height:70px}
+button,.btn{background:var(--green);color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--green-dark)}
+button.secondary{background:#fff;color:var(--green);border:1px solid var(--green)}
+button.danger{background:var(--danger)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1;min-width:150px}.row>button{flex:0 0 auto}
+.check{display:flex;align-items:center;gap:8px;margin:6px 0}.check input{width:auto}
+#map{height:380px;border-radius:10px;border:1px solid var(--border);margin:12px 0}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:#e4efe8;color:var(--green-dark);margin-right:4px}
+.badge.requested{background:#fff1d6;color:#7a5200}.badge.accepted{background:#dcebff;color:#0b4a8f}
+.badge.processing{background:#ece3ff;color:#4b2c91}.badge.completed{background:#d8f2e1;color:#145a38}
+.badge.rejected{background:#fde2e0;color:var(--danger)}.badge.yes{background:#d8f2e1;color:#145a38}.badge.no{background:#eee;color:#666}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}th{background:#eef4f0}
+.table-wrap{overflow-x:auto}
+.msg{padding:10px 12px;border-radius:8px;margin:10px 0;font-size:14px}
+.msg.error{background:#fde2e0;color:var(--danger)}.msg.ok{background:#d8f2e1;color:#145a38}
+.auth{max-width:420px;margin:48px auto}
+.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}

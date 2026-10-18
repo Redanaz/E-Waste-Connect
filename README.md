@@ -36,8 +36,7 @@ e-waste-connect/
 │   ├── index.js
 │   ├── config/          # Supabase client
 │   ├── middleware/      # JWT auth, role checks
-│   ├── routes/          # auth, centers, categories, requests, admin, geo
-│   ├── controllers/
+│   ├── routes/          # auth, centers, categories, requests, admin, geo (route logic included)
 │   ├── services/        # nominatim.js, osrm.js
 │   └── utils/
 ├── public/              # Frontend pages, css, js
@@ -151,3 +150,7 @@ Nominatim and the public OSRM server are free community services intended for li
 - S. Amulya
 
 Methodist College of Engineering and Technology, Hyderabad
+
+## License
+
+Add a license of your choice (for example MIT) before making the repository public.

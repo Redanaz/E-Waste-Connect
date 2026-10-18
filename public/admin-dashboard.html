@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header id="nav"></header>
+<main>
+  <h1>System administration</h1>
+  <div id="msg"></div>
+  <h2>Recycling centers</h2><div id="centers"></div>
+  <h2>Requests</h2><div id="requests"></div>
+  <h2>Users</h2><div id="users"></div>
+</main>
+<script src="/js/api.js"></script>
+<script>
+const user = requireRole('system_admin'); renderNav();
+const table = (head, rows) => `<div class="table-wrap"><table><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr>${rows.join('') || `<tr><td colspan="${head.length}" class="muted">Nothing yet</td></tr>`}</table></div>`;
+
+async function loadCenters() {
+  const rows = await api('/admin/centers');
+  document.getElementById('centers').innerHTML = table(['Center', 'Owner', 'Address', 'Verified', ''], rows.map((c) =>
+    `<tr><td>${esc(c.name)}</td><td>${esc(c.users.name)}<br><span class="muted">${esc(c.users.email)}</span></td><td>${esc(c.address)} ${esc(c.pincode)}</td><td>${yesNo(c.is_verified)}</td>
+     <td><button class="${c.is_verified ? 'secondary' : ''}" onclick="verify('${c.id}', ${!c.is_verified})">${c.is_verified ? 'Unverify' : 'Verify'}</button></td></tr>`));
+}
+async function loadRequests() {
+  const rows = await api('/admin/requests');
+  document.getElementById('requests').innerHTML = table(['User', 'Center', 'Category', 'Qty', 'Mode', 'Status', 'Created'], rows.map((r) =>
+    `<tr><td>${esc(r.users.name)}</td><td>${esc(r.centers.name)}</td><td>${esc(r.waste_categories.name)}</td><td>${r.quantity}</td><td>${esc(r.mode)}</td><td>${statusBadge(r.status)}</td><td>${fmtDate(r.created_at)}</td></tr>`));
+}
+async function loadUsers() {
+  const rows = await api('/admin/users');
+  document.getElementById('users').innerHTML = table(['Name', 'Email', 'Role', 'Joined'], rows.map((u) =>
+    `<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${esc(u.role)}</td><td>${fmtDate(u.created_at)}</td></tr>`));
+}
+async function verify(id, verified) {
+  try { await api(`/admin/centers/${id}/verify`, { method: 'PATCH', body: { verified } }); loadCenters(); } catch (e) { showMsg('msg', e.message); }
+}
+Promise.all([loadCenters(), loadRequests(), loadUsers()]).catch((e) => showMsg('msg', e.message));
+</script>
+</body>
+</html>

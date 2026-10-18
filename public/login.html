@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Log in - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header id="nav"></header>
+<main class="auth">
+  <h1>Log in</h1>
+  <div class="card">
+    <div id="msg"></div>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password">
+    <div class="actions"><button id="go">Log in</button></div>
+    <p class="muted">No account? <a href="/register.html">Register</a></p>
+  </div>
+</main>
+<script src="/js/api.js"></script>
+<script>
+renderNav();
+async function login() {
+  try {
+    const d = await api('/auth/login', { method: 'POST', body: { email: email.value, password: password.value } });
+    saveSession(d.token, d.user);
+    location.href = dashboardFor(d.user.role);
+  } catch (e) { showMsg('msg', e.message); }
+}
+document.getElementById('go').onclick = login;
+document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+</script>
+</body>
+</html>

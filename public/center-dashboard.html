@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Center dashboard - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header id="nav"></header>
+<main>
+  <h1>My recycling center</h1>
+  <div id="verify-note"></div>
+  <div class="card">
+    <div id="msg"></div>
+    <div class="row">
+      <div><label for="name">Center name</label><input id="name"></div>
+      <div><label for="phone">Phone</label><input id="phone"></div>
+    </div>
+    <div class="row">
+      <div><label for="address">Address</label><input id="address"></div>
+      <div><label for="pincode">PIN code</label><input id="pincode" maxlength="6"></div>
+    </div>
+    <div class="check"><input type="checkbox" id="dropoff" checked><label for="dropoff" style="margin:0">Accepts drop-off</label></div>
+    <div class="check"><input type="checkbox" id="pickup"><label for="pickup" style="margin:0">Offers pickup</label></div>
+    <label>Accepted categories</label>
+    <div id="cats"></div>
+    <div class="actions"><button id="save">Save center</button></div>
+    <p class="muted">The location on the map is found automatically from the address and PIN code.</p>
+  </div>
+  <h2>Incoming requests</h2>
+  <div id="list"></div>
+</main>
+<script src="/js/api.js"></script>
+<script>
+const user = requireRole('center_admin'); renderNav();
+const NEXT = { requested: [['accepted', 'Accept'], ['rejected', 'Reject']], accepted: [['processing', 'Start processing']], processing: [['completed', 'Mark completed']] };
+let center = null, cats = [];
+
+async function load() {
+  cats = await api('/categories');
+  center = (await api('/centers/mine')).center;
+  const sel = new Set(center ? center.category_ids : []);
+  document.getElementById('cats').innerHTML = cats.map((c) =>
+    `<div class="check"><input type="checkbox" class="cat" value="${c.id}" id="c${c.id}" ${sel.has(c.id) ? 'checked' : ''}><label for="c${c.id}" style="margin:0">${esc(c.name)}</label></div>`).join('');
+  if (center) {
+       document.getElementById('name').value = center.name; phone.value = center.phone || ''; address.value = center.address;
+    pincode.value = center.pincode || ''; pickup.checked = center.pickup_available; dropoff.checked = center.dropoff_available;
+    document.getElementById('verify-note').innerHTML = center.is_verified
+      ? '<div class="msg ok">Your center is verified and visible to users.</div>'
+      : '<div class="msg error">Your center is waiting for verification by the system admin. It is not visible to users yet.</div>';
+    loadRequests();
+  } else {
+    document.getElementById('verify-note').innerHTML = '<div class="msg error">Register your center below to get started.</div>';
+    document.getElementById('list').innerHTML = '<div class="card muted">No center yet.</div>';
+  }
+}
+
+document.getElementById('save').onclick = async () => {
+  showMsg('msg', '');
+  try {
+    const body = {    name: document.getElementById('name').value.trim(), phone: phone.value.trim(), address: address.value.trim(), pincode: pincode.value.trim(),
+      pickup_available: pickup.checked, dropoff_available: dropoff.checked };
+    const saved = center ? await api('/centers/' + center.id, { method: 'PUT', body }) : await api('/centers', { method: 'POST', body });
+    const ids = [...document.querySelectorAll('.cat:checked')].map((x) => Number(x.value));
+    await api(`/centers/${saved.id}/categories`, { method: 'PUT', body: { category_ids: ids } });
+    showMsg('msg', 'Center saved.', 'ok');
+    await load();
+  } catch (e) { showMsg('msg', e.message); }
+};
+
+async function loadRequests() {
+  const rows = await api('/requests/center');
+  document.getElementById('list').innerHTML = rows.length ? `<div class="table-wrap"><table><tr><th>User</th><th>Category</th><th>Qty</th><th>Mode</th><th>Details</th><th>Status</th><th></th></tr>${
+    rows.map((r) => `<tr><td>${esc(r.users.name)}<br><span class="muted">${esc(r.users.email)}</span></td><td>${esc(r.waste_categories.name)}</td><td>${r.quantity}</td>
+      <td>${esc(r.mode)}${r.pickup_address ? '<br><span class="muted">' + esc(r.pickup_address) + '</span>' : ''}</td><td>${esc(r.description)}</td><td>${statusBadge(r.status)}</td>
+      <td>${(NEXT[r.status] || []).map(([s, label]) => `<button class="${s === 'rejected' ? 'danger' : ''}" onclick="setStatus('${r.id}','${s}')">${label}</button>`).join(' ')}</td></tr>`).join('')
+  }</table></div>` : '<div class="card muted">No requests yet.</div>';
+}
+async function setStatus(id, status) {
+  try { await api(`/requests/${id}/status`, { method: 'PATCH', body: { status } }); loadRequests(); } catch (e) { showMsg('msg', e.message); }
+}
+load().catch((e) => showMsg('msg', e.message));
+</script>
+</body>
+</html>

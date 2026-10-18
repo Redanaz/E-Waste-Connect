@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-Waste Connect</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header id="nav"></header>
+<main>
+  <h1>Find a verified e-waste recycling center</h1>
+  <p class="muted">Search by area or PIN code, or use your current location. Hyderabad first, more cities soon.</p>
+  <div class="card">
+    <div class="row">
+      <div><label for="q">Location or PIN code</label><input id="q" placeholder="e.g. 500081 or Madhapur, Hyderabad"></div>
+      <div><label for="category">E-waste category</label><select id="category"><option value="">All categories</option></select></div>
+      <div><label for="radius">Radius</label><select id="radius"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="25">25 km</option><option value="50">50 km</option></select></div>
+      <button id="search">Find centers</button>
+      <button id="locate" class="secondary">Use my location</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+  <div id="map"></div>
+  <div id="results"></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="/js/api.js"></script>
+<script>
+renderNav();
+const map = L.map('map').setView([17.385, 78.4867], 11);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+let markers = L.layerGroup().addTo(map), routeLayer = null, origin = null, centers = [];
+
+api('/categories').then((cats) => {
+  document.getElementById('category').innerHTML += cats.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+}).catch(() => {});
+
+async function search(params) {
+  showMsg('msg', '');
+  const qs = new URLSearchParams(params);
+  const cat = document.getElementById('category').value;
+  if (cat) qs.set('category', cat);
+  qs.set('radius', document.getElementById('radius').value);
+  try {
+    const data = await api('/centers/nearby?' + qs);
+    origin = data.origin; centers = data.centers;
+    render();
+  } catch (e) { showMsg('msg', e.message); }
+}
+
+function render() {
+  markers.clearLayers();
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  L.circleMarker([origin.lat, origin.lng], { radius: 8, color: '#0b4a8f', fillOpacity: .8 }).addTo(markers).bindPopup('Your search location');
+  const bounds = [[origin.lat, origin.lng]];
+  centers.forEach((c) => { L.marker([c.lat, c.lng]).addTo(markers).bindPopup(esc(c.name)); bounds.push([c.lat, c.lng]); });
+  map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+  const u = getUser();
+  document.getElementById('results').innerHTML = centers.length ? centers.map((c) => `
+    <div class="card">
+      <strong>${esc(c.name)}</strong> <span class="muted">&middot; ${c.distance_km} km away</span><br>
+      <span class="muted">${esc(c.address)}${c.pincode ? ' - ' + esc(c.pincode) : ''}${c.phone ? ' &middot; ' + esc(c.phone) : ''}</span>
+      <div style="margin-top:6px">${c.categories.map((n) => `<span class="badge">${esc(n)}</span>`).join('')}</div>
+      <div style="margin-top:6px">Pickup ${yesNo(c.pickup_available)} Drop-off ${yesNo(c.dropoff_available)}</div>
+      <div class="actions">
+        <button class="secondary" onclick="showRoute('${c.id}')">Show route</button>
+        <a class="btn" href="${u && u.role === 'user' ? '/user-dashboard.html?center=' + c.id : '/login.html'}">Request disposal</a>
+      </div>
+      <div id="route-${c.id}" class="muted"></div>
+    </div>`).join('') : '<div class="card">No verified centers found nearby for that search. Try a larger radius or another category.</div>';
+}
+
+async function showRoute(id) {
+  const c = centers.find((x) => x.id === id);
+  try {
+    const r = await api(`/geo/route?fromLat=${origin.lat}&fromLng=${origin.lng}&toLat=${c.lat}&toLng=${c.lng}`);
+    if (routeLayer) map.removeLayer(routeLayer);
+    routeLayer = L.geoJSON(r.geometry, { style: { color: '#1f7a4d', weight: 5 } }).addTo(map);
+    map.fitBounds(routeLayer.getBounds(), { padding: [30, 30] });
+    document.getElementById('route-' + id).textContent = `Driving: ${r.distanceKm} km, about ${r.durationMin} min`;
+    document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+  } catch (e) { document.getElementById('route-' + id).textContent = e.message; }
+}
+
+document.getElementById('search').onclick = () => {
+  const v = document.getElementById('q').value.trim();
+  if (!v) return showMsg('msg', 'Enter a location or PIN code first');
+  search(/^\d{6}$/.test(v) ? { pincode: v } : { q: v });
+};
+document.getElementById('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('search').click(); });
+document.getElementById('locate').onclick = () => {
+  if (!navigator.geolocation) return showMsg('msg', 'Geolocation is not supported by your browser');
+  navigator.geolocation.getCurrentPosition(
+    (p) => search({ lat: p.coords.latitude, lng: p.coords.longitude }),
+    () => showMsg('msg', 'Could not get your location. Type a location or PIN code instead.'));
+};
+</script>
+</body>
+</html>
