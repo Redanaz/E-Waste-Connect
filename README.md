@@ -150,7 +150,3 @@ Nominatim and the public OSRM server are free community services intended for li
 - S. Amulya
 
 Methodist College of Engineering and Technology, Hyderabad
-
-## License
-
-Add a license of your choice (for example MIT) before making the repository public.
