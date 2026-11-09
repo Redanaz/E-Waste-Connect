@@ -33,9 +33,12 @@ router.post('/', requireRole('user'), asyncHandler(async (req, res) => {
     user_id: req.user.id, center_id, category_id, mode, quantity, description,
     pickup_address: mode === 'pickup' ? pickup_address : null
   }).select().single());
+
+  must(await supabase.from('request_status_history')
+    .insert({ request_id: created.id, status: 'requested', changed_by: req.user.id }));
+
   res.status(201).json(created);
 }));
-
 router.get('/mine', requireRole('user'), asyncHandler(async (req, res) => {
   res.json(must(await supabase.from('requests')
     .select('id,quantity,description,mode,pickup_address,status,created_at,updated_at,centers(name),waste_categories(name)')
@@ -60,7 +63,21 @@ router.patch('/:id/status', requireRole('center_admin'), asyncHandler(async (req
   }
   const updated = must(await supabase.from('requests')
     .update({ status, updated_at: new Date().toISOString() }).eq('id', reqRow.id).select('id,status').single());
+
+  must(await supabase.from('request_status_history')
+    .insert({ request_id: reqRow.id, status, changed_by: req.user.id, note: req.body.note || null }));
+
   res.json(updated);
 }));
-
+router.get('/:id/history', asyncHandler(async (req, res) => {
+  const r = must(await supabase.from('requests')
+    .select('id,user_id,status,centers(admin_id)').eq('id', req.params.id).maybeSingle());
+  if (!r) throw new HttpError(404, 'Request not found');
+  const allowed = req.user.role === 'system_admin' || r.user_id === req.user.id
+    || (req.user.role === 'center_admin' && r.centers.admin_id === req.user.id);
+  if (!allowed) throw new HttpError(403, 'You do not have access to this request');
+  const history = must(await supabase.from('request_status_history')
+    .select('status,note,created_at').eq('request_id', r.id).order('created_at'));
+  res.json({ request_id: r.id, current_status: r.status, history });
+}));
 module.exports = router;
