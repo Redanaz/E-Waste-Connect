@@ -1,36 +1,616 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Register - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join E-Waste Connect</title>
+<link rel="stylesheet" href="/css/styles.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --forest: #102d24;
+  --green: #174d38;
+  --lime: #c4f36b;
+  --muted: #82928a;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f3f7f3;
+  font-family: 'DM Sans', sans-serif;
+  color: #18372b;
+}
+
+.nav {
+  background: white;
+  padding: 17px 6%;
+  box-shadow: 0 2px 15px #102d2410;
+}
+
+.brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 23px;
+  font-weight: 800;
+  color: var(--forest);
+  text-decoration: none;
+}
+
+.nav nav { gap: 24px; }
+.nav nav a { text-decoration: none; font-weight: 600; }
+
+.register-page {
+  min-height: calc(100vh - 65px);
+  padding: 35px 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-layout {
+  width: 100%;
+  max-width: 1180px;
+  min-height: 680px;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  background: white;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px #173b2816;
+}
+
+/* LEFT HERO SECTION */
+
+.hero {
+  background:
+    radial-gradient(circle at 85% 15%, #c4f36b35, transparent 30%),
+    radial-gradient(circle at 10% 90%, #83bd6b25, transparent 35%),
+    linear-gradient(145deg, #102d24, #174d38 70%, #28613e);
+  padding: 55px 45px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border: 1px solid #ffffff16;
+  border-radius: 50%;
+  right: -160px;
+  bottom: -150px;
+  box-shadow: 0 0 0 45px #ffffff08,
+              0 0 0 90px #ffffff05;
+}
+
+.hero-brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -.8px;
+}
+
+.hero-brand span { color: var(--lime); }
+
+.hero-content { position: relative; z-index: 1; }
+
+.eyebrow {
+  color: var(--lime);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(38px, 4vw, 55px);
+  line-height: 1.08;
+  letter-spacing: -2px;
+  margin: 20px 0;
+}
+
+.hero h1 span { color: var(--lime); }
+
+.hero-content > p {
+  color: #c7d7cd;
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 360px;
+}
+
+.eco-art {
+  margin: 30px 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.eco-circle {
+  width: 210px;
+  height: 210px;
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff0c;
+  box-shadow: 0 0 60px #c4f36b12;
+}
+
+.eco-circle span { font-size: 100px; }
+
+.hero-points {
+  display: grid;
+  gap: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-point {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #dce9df;
+  font-size: 13px;
+}
+
+.point-icon {
+  width: 34px;
+  height: 34px;
+  background: #ffffff14;
+  color: var(--lime);
+  border: 1px solid #ffffff20;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+/* RIGHT FORM */
+
+.form-side {
+  padding: 45px 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-top {
+  margin-bottom: 25px;
+}
+
+.form-top .tag {
+  color: #477c43;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.form-top h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 35px;
+  color: var(--forest);
+  margin: 10px 0;
+  letter-spacing: -1px;
+}
+
+.form-top p {
+  color: #82928a;
+  font-size: 13px;
+}
+
+/* ACCOUNT TYPE CARDS */
+
+.role-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 11px;
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 23px;
+}
+
+.role-card {
+  border: 1.5px solid #e2eae2;
+  border-radius: 15px;
+  padding: 15px 12px;
+  cursor: pointer;
+  transition: .25s ease;
+  background: white;
+}
+
+.role-card:hover {
+  border-color: #91c76a;
+  transform: translateY(-2px);
+}
+
+.role-card.active {
+  background: #f1f8e9;
+  border-color: #78ad49;
+  box-shadow: 0 0 0 2px #78ad4915;
+}
+
+.role-card input { display: none; }
+
+.role-icon {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.role-card strong {
+  display: block;
+  font-size: 13px;
+  color: #193b2b;
+}
+
+.role-card small {
+  display: block;
+  color: #8b9990;
+  font-size: 10px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+/* INPUTS */
+
+.field { margin-bottom: 15px; }
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 7px;
+  color: #304c3b;
+}
+
+.field input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #e2eae2;
+  border-radius: 10px;
+  background: #fafcf9;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.field input:focus {
+  border-color: #78ad49;
+  background: white;
+  box-shadow: 0 0 0 3px #78ad4918;
+}
+
+.field input::placeholder { color: #b1bdb5; }
+
+.password-wrap { position: relative; }
+
+.password-wrap input { padding-right: 55px; }
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #66806c;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 51px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--forest);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: .25s;
+}
+
+.submit-btn:hover {
+  background: #28613e;
+  box-shadow: 0 8px 20px #174d3830;
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  opacity: .6;
+  cursor: wait;
+  transform: none;
+}
+
+.bottom-text {
+  text-align: center;
+  font-size: 12px;
+  color: #89968d;
+  margin-top: 20px;
+}
+
+.bottom-text a {
+  color: #28613e;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.privacy {
+  font-size: 10px;
+  text-align: center;
+  color: #a1ada4;
+  margin-top: 20px;
+}
+
+#msg { margin-bottom: 12px; }
+
+.msg {
+  padding: 11px 13px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.msg.error { background: #fff0ef; color: #a43c32; }
+.msg.ok { background: #edf8e9; color: #28613e; }
+
+/* RESPONSIVE */
+
+@media(max-width: 850px) {
+  .register-layout { grid-template-columns: 1fr; }
+  .hero { padding: 35px; }
+  .hero h1 { font-size: 39px; }
+  .eco-art { margin: 15px 0; }
+  .eco-circle { width: 130px; height: 130px; }
+  .eco-circle span { font-size: 65px; }
+  .hero-points { grid-template-columns: 1fr 1fr; }
+  .form-side { padding: 40px 30px; }
+}
+
+@media(max-width: 480px) {
+  .register-page { padding: 15px 10px; }
+  .register-layout { border-radius: 18px; }
+  .hero { padding: 28px 23px; }
+  .hero h1 { font-size: 36px; }
+  .form-side { padding: 30px 20px; }
+  .form-top h2 { font-size: 30px; }
+  .roles { gap: 8px; }
+  .role-card { padding: 12px 8px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+}
+</style>
+</head>
+
 <body>
+
 <header id="nav"></header>
-<main class="auth">
-  <h1>Create an account</h1>
-  <div class="card">
-    <div id="msg"></div>
-    <label for="role">I am a</label>
-    <select id="role"><option value="user">User (I have e-waste to dispose of)</option><option value="center_admin">Recycling center admin</option></select>
-    <label for="name">Name</label><input id="name" autocomplete="name">
-    <label for="email">Email</label><input id="email" type="email" autocomplete="email">
-    <label for="password">Password (min 6 characters)</label><input id="password" type="password" autocomplete="new-password">
-    <div class="actions"><button id="go">Register</button></div>
-    <p class="muted">Already registered? <a href="/login.html">Log in</a></p>
-  </div>
+
+<main class="register-page">
+<div class="register-layout">
+
+  <!-- LEFT HERO -->
+  <section class="hero">
+
+    <div class="hero-brand">♻ E-WASTE <span>CONNECT</span></div>
+
+    <div class="hero-content">
+      <div class="eyebrow">A cleaner tomorrow starts today</div>
+
+      <h1>Give your<br>e-waste a<br><span>new purpose.</span></h1>
+
+      <p>
+        Connect with trusted recycling centres, discover responsible
+        disposal options and become part of a smarter, greener future.
+      </p>
+
+      <div class="eco-art">
+        <div class="eco-circle">
+          <span>🌍</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-points">
+      <div class="hero-point">
+        <div class="point-icon">♻</div>
+        <span>Responsible e-waste recycling</span>
+      </div>
+      <div class="hero-point">
+        <div class="point-icon">📍</div>
+        <span>Find nearby collection centres</span>
+      </div>
+      <div class="hero-point">
+        <div class="point-icon">🌱</div>
+        <span>Make a positive environmental impact</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- RIGHT REGISTRATION -->
+  <section class="form-side">
+
+    <div class="form-top">
+      <div class="tag">WELCOME TO THE COMMUNITY</div>
+      <h2>Create account<span style="color:#83b957">.</span></h2>
+      <p>Join us in making electronic waste management easier.</p>
+    </div>
+
+    <div id="msg" aria-live="polite"></div>
+
+    <form id="register-form">
+
+      <div class="role-title">Choose your account type</div>
+
+      <div class="roles">
+
+        <label class="role-card active" id="user-card">
+          <input type="radio" name="role" value="user" checked>
+          <div class="role-icon">👤</div>
+          <strong>Public User</strong>
+          <small>Find recycling centres and dispose of e-waste.</small>
+        </label>
+
+        <label class="role-card" id="admin-card">
+          <input type="radio" name="role" value="center_admin">
+          <div class="role-icon">🏢</div>
+          <strong>Recycler Admin</strong>
+          <small>Register and manage your recycling centre.</small>
+        </label>
+
+      </div>
+
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" type="text" placeholder="Enter your full name"
+          autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@example.com"
+          autocomplete="email" required>
+      </div>
+
+      <div class="field-row">
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" type="password"
+              placeholder="Minimum 6 characters"
+              autocomplete="new-password" minlength="6" required>
+            <button class="toggle-password" type="button"
+              onclick="togglePassword('password',this)">SHOW</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <div class="password-wrap">
+            <input id="confirm" type="password"
+              placeholder="Re-enter password"
+              autocomplete="new-password" required>
+            <button class="toggle-password" type="button"
+              onclick="togglePassword('confirm',this)">SHOW</button>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="submit" class="submit-btn" id="go">
+        Create My Account →
+      </button>
+
+    </form>
+
+    <div class="bottom-text">
+      Already have an account?
+      <a href="/login.html">Sign in</a>
+    </div>
+
+    <div class="privacy">
+      ♡ Your information is handled securely.
+    </div>
+
+  </section>
+
+</div>
 </main>
+
 <script src="/js/api.js"></script>
+
 <script>
 renderNav();
-document.getElementById('go').onclick = async () => {
+
+const form = document.getElementById('register-form');
+const button = document.getElementById('go');
+
+const roleCards = document.querySelectorAll('.role-card');
+
+roleCards.forEach(card => {
+  card.addEventListener('click', () => {
+    roleCards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const visible = input.type === 'password';
+  input.type = visible ? 'text' : 'password';
+  btn.textContent = visible ? 'HIDE' : 'SHOW';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  showMsg('msg', '');
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const confirm = document.getElementById('confirm').value;
+  const role = document.querySelector('input[name="role"]:checked').value;
+
+  if (password.length < 6) {
+    showMsg('msg', 'Password must contain at least 6 characters.');
+    return;
+  }
+
+  if (password !== confirm) {
+    showMsg('msg', 'Your passwords do not match.');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Creating your account...';
+
   try {
-    const d = await api('/auth/register', { method: 'POST', body: {
-      name: document.getElementById('name').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      password: document.getElementById('password').value,
-      role: document.getElementById('role').value
-    } });
+    const d = await api('/auth/register', {
+      method: 'POST',
+      body: { name, email, password, role }
+    });
+
     saveSession(d.token, d.user);
     location.href = dashboardFor(d.user.role);
-  } catch (e) { showMsg('msg', e.message); }
-};
+
+  } catch (error) {
+    showMsg('msg', error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Create My Account →';
+  }
+});
 </script>
+
 </body>
 </html>

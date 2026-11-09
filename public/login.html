@@ -1,30 +1,145 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Log in - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome Back | E-Waste Connect</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
 <body>
+
 <header id="nav"></header>
-<main class="auth">
-  <h1>Log in</h1>
-  <div class="card">
-    <div id="msg"></div>
-    <label for="email">Email</label><input id="email" type="email" autocomplete="email">
-    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password">
-    <div class="actions"><button id="go">Log in</button></div>
-    <p class="muted">No account? <a href="/register.html">Register</a></p>
-  </div>
+
+<main class="login-page">
+  <section class="login-shell">
+
+    <div class="login-visual">
+      <div class="login-visual-content">
+        <div class="login-eyebrow">♻ E-WASTE CONNECT</div>
+
+        <h1>
+          Small actions.<br>
+          <span>Big impact.</span>
+        </h1>
+
+        <p>
+          The future deserves more than a landfill.
+          Discover responsible recycling, connect with
+          verified centres and be part of a circular future.
+        </p>
+
+        <div class="login-visual-art" aria-hidden="true">♻</div>
+      </div>
+
+      <div class="login-visual-footer">
+        A smarter way to recycle. A better way to move forward.
+      </div>
+    </div>
+
+    <div class="login-form-side">
+      <div class="login-form">
+
+        <div class="welcome">Welcome back</div>
+
+        <h2>Let's get you in.</h2>
+
+        <p class="form-description">
+          Sign in to continue your sustainability journey.
+        </p>
+
+        <div id="msg"></div>
+
+        <form id="login-form">
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+
+          <label for="password">Password</label>
+
+          <div class="login-password-wrap">
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              id="toggle-password"
+            >Show</button>
+          </div>
+
+          <button type="submit" class="login-submit" id="go">
+            Sign in →
+          </button>
+        </form>
+
+        <p class="login-register">
+          New to E-Waste Connect?
+          <a href="/register.html">Create an account</a>
+        </p>
+
+      </div>
+    </div>
+
+  </section>
 </main>
+
 <script src="/js/api.js"></script>
+
 <script>
 renderNav();
+
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const loginForm = document.getElementById('login-form');
+const loginButton = document.getElementById('go');
+
+document.getElementById('toggle-password').onclick = function () {
+  const showing = passwordInput.type === 'text';
+
+  passwordInput.type = showing ? 'password' : 'text';
+  this.textContent = showing ? 'Show' : 'Hide';
+};
+
 async function login() {
+  showMsg('msg', '');
+
+  loginButton.disabled = true;
+  loginButton.textContent = 'Signing in...';
+
   try {
-    const d = await api('/auth/login', { method: 'POST', body: { email: email.value, password: password.value } });
+    const d = await api('/auth/login', {
+      method: 'POST',
+      body: {
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      }
+    });
+
     saveSession(d.token, d.user);
     location.href = dashboardFor(d.user.role);
-  } catch (e) { showMsg('msg', e.message); }
+
+  } catch (e) {
+    showMsg('msg', e.message);
+    loginButton.disabled = false;
+    loginButton.textContent = 'Sign in →';
+  }
 }
-document.getElementById('go').onclick = login;
-document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  login();
+});
 </script>
+
 </body>
 </html>

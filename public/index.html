@@ -1,99 +1,674 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>E-Waste Connect</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#092d20">
+  <meta name="description" content="Find verified e-waste recycling centres near you with E-Waste Connect.">
+  <title>E-Waste Connect | Responsible E-Waste Recycling</title>
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
 <header id="nav"></header>
-<main>
-  <h1>Find a verified e-waste recycling center</h1>
-  <p class="muted">Search by area or PIN code, or use your current location. Hyderabad first, more cities soon.</p>
-  <div class="card">
-    <div class="row">
-      <div><label for="q">Location or PIN code</label><input id="q" placeholder="e.g. 500081 or Madhapur, Hyderabad"></div>
-      <div><label for="category">E-waste category</label><select id="category"><option value="">All categories</option></select></div>
-      <div><label for="radius">Radius</label><select id="radius"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="25">25 km</option><option value="50">50 km</option></select></div>
-      <button id="search">Find centers</button>
-      <button id="locate" class="secondary">Use my location</button>
+
+<main class="home-main">
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-copy">
+      <span class="hero-tag">♻ A cleaner tomorrow starts here</span>
+
+      <h1>
+        Give your e-waste a
+        <span>better destination.</span>
+      </h1>
+
+      <p>
+        Your old electronics deserve a responsible next step.
+        Discover verified recycling centres and make e-waste
+        disposal simpler.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#search-section" class="btn hero-primary">
+          Find a recycling centre <span>→</span>
+        </a>
+        <a href="#how-it-works" class="hero-secondary">
+          How it works <span>↗</span>
+        </a>
+      </div>
+
+      <div class="hero-note">
+        <span>✓</span> Search nearby · Compare options · Dispose responsibly
+      </div>
     </div>
-    <div id="msg"></div>
-  </div>
-  <div id="map"></div>
-  <div id="results"></div>
+
+    <div class="hero-art" aria-hidden="true">
+      <div class="hero-orbit orbit-one"></div>
+      <div class="hero-orbit orbit-two"></div>
+      <div class="hero-globe">
+        <span>♻</span>
+      </div>
+      <div class="floating-chip chip-one">🌱 Reuse</div>
+      <div class="floating-chip chip-two">⚡ Recycle</div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="trust-strip" aria-label="Platform features">
+    <div><span>✓</span> Verified collection centres</div>
+    <div><span>⌖</span> Location-based discovery</div>
+    <div><span>↗</span> Pickup and drop-off options</div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="search-section" id="search-section">
+    <div class="section-intro">
+      <span class="eyebrow">START EXPLORING</span>
+      <h2>Find a recycling centre near you.</h2>
+      <p class="muted">
+        Enter your location or PIN code to discover nearby collection points.
+      </p>
+    </div>
+
+    <section class="search-panel">
+      <div class="row">
+        <div>
+          <label for="q">Your location</label>
+          <input id="q" placeholder="e.g. 500081 or Madhapur, Hyderabad">
+        </div>
+
+        <div>
+          <label for="category">E-waste category</label>
+          <select id="category">
+            <option value="">All categories</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="radius">Search radius</label>
+          <select id="radius">
+            <option value="5">5 km</option>
+            <option value="10" selected>10 km</option>
+            <option value="25">25 km</option>
+            <option value="50">50 km</option>
+          </select>
+        </div>
+
+        <button id="search">Find centres →</button>
+        <button id="locate" class="secondary">◎ Use my location</button>
+      </div>
+      <div id="msg"></div>
+    </section>
+
+    <section class="results-section" id="results-section">
+      <div class="results-heading">
+        <div>
+          <span class="eyebrow">YOUR SEARCH RESULTS</span>
+          <h2>Nearby recycling centres</h2>
+          <p class="muted">Choose a centre to view its route or request disposal.</p>
+        </div>
+      </div>
+      <div id="results"></div>
+    </section>
+  </section>
+
+  <!-- IMPACT / VALUE STRIP -->
+  <section class="impact-section">
+    <div class="impact-heading">
+      <span class="eyebrow">WHY RESPONSIBLE DISPOSAL MATTERS</span>
+      <h2>Small actions. A meaningful difference.</h2>
+      <p class="muted">
+        The right disposal choice helps keep electronic waste in the
+        appropriate recycling stream.
+      </p>
+    </div>
+
+    <div class="impact-grid">
+      <article class="impact-card">
+        <span class="impact-icon">♻</span>
+        <h3>Responsible recycling</h3>
+        <p>Connect with collection centres that handle electronic waste.</p>
+      </article>
+
+      <article class="impact-card">
+        <span class="impact-icon">📍</span>
+        <h3>Discover nearby</h3>
+        <p>Search by location and explore centres within your chosen radius.</p>
+      </article>
+
+      <article class="impact-card">
+        <span class="impact-icon">🌿</span>
+        <h3>Make informed choices</h3>
+        <p>Check accepted categories and available disposal options.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories-section" id="categories">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">WHAT CAN YOU RECYCLE?</span>
+        <h2>Give old electronics a new direction.</h2>
+        <p class="muted">Choose a category to find centres that accept it.</p>
+      </div>
+    </div>
+
+    <div class="category-grid" id="category-cards">
+      <div class="category-loading">Loading e-waste categories...</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how-it-works">
+    <div class="how-heading">
+      <span class="eyebrow">SIMPLE. CLEAR. RESPONSIBLE.</span>
+      <h2>How E-Waste Connect works</h2>
+      <p>Three simple steps to find a better destination for your electronics.</p>
+    </div>
+
+    <div class="steps-grid">
+      <article class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-icon">⌕</div>
+        <h3>Search</h3>
+        <p>Enter your location and select the type of e-waste you want to dispose of.</p>
+      </article>
+
+      <article class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-icon">⌖</div>
+        <h3>Discover</h3>
+        <p>Compare nearby verified centres, accepted categories and available services.</p>
+      </article>
+
+      <article class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-icon">✓</div>
+        <h3>Take action</h3>
+        <p>Choose pickup or drop-off and submit a disposal request where available.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- MAP EXPLORER -->
+  <section class="map-explorer" id="map-explorer">
+    <div class="map-heading">
+      <div>
+        <span class="eyebrow">EXPLORE VISUALLY</span>
+        <h2>See what's around you.</h2>
+        <p class="muted">
+          Open the interactive map to view your search location and nearby centres.
+        </p>
+      </div>
+      <span class="badge">Interactive map</span>
+    </div>
+
+    <button id="open-map" class="map-open-btn">
+      <span>◎</span>
+      Explore interactive map
+      <span class="map-arrow">↗</span>
+    </button>
+
+    <div id="map-view" hidden>
+      <div class="map-toolbar">
+        <div>
+          <strong>Explore the map</strong>
+          <p class="muted">View centre locations and routes.</p>
+        </div>
+        <button id="close-map" class="secondary">← Back</button>
+      </div>
+      <div id="map"></div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why-section" id="about">
+    <div class="why-visual">
+      <div class="why-circle">
+        <span>🌍</span>
+        <small>Better choices<br>for tomorrow</small>
+      </div>
+      <div class="why-floating">♻ Responsible disposal</div>
+    </div>
+
+    <div class="why-copy">
+      <span class="eyebrow">ABOUT E-WASTE CONNECT</span>
+      <h2>Making responsible e-waste disposal easier to find.</h2>
+      <p>
+        Finding the right place to dispose of old electronics shouldn't
+        be complicated. E-Waste Connect brings location discovery,
+        centre information and disposal options together in one place.
+      </p>
+
+      <ul class="why-list">
+        <li><span>✓</span> Discover verified collection centres</li>
+        <li><span>✓</span> Explore accepted e-waste categories</li>
+        <li><span>✓</span> Check pickup and drop-off availability</li>
+        <li><span>✓</span> View routes to selected centres</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="join-section">
+    <div>
+      <span class="eyebrow">BE PART OF THE CHANGE</span>
+      <h2>Every device deserves a responsible next step.</h2>
+      <p>
+        Join E-Waste Connect and help make responsible electronic
+        waste disposal easier to access.
+      </p>
+    </div>
+
+    <div class="join-actions">
+      <a href="/register.html" class="btn join-primary">Create an account →</a>
+      <a href="/login.html" class="join-login">Already registered? Log in</a>
+    </div>
+  </section>
+
 </main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a href="#home" class="footer-logo">♻ E-Waste Connect</a>
+      <p>
+        Connecting people with responsible e-waste collection
+        and recycling options.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <strong>Explore</strong>
+      <a href="#home">Home</a>
+      <a href="#search-section">Find centres</a>
+      <a href="#categories">E-waste categories</a>
+      <a href="#how-it-works">How it works</a>
+    </div>
+
+    <div class="footer-links">
+      <strong>Account</strong>
+      <a href="/login.html">Login</a>
+      <a href="/register.html">Register</a>
+      <a href="#about">About us</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="footer-year"></span> E-Waste Connect</span>
+    <span>Make the responsible choice. ♻</span>
+  </div>
+</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="/js/api.js"></script>
+
 <script>
 renderNav();
-const map = L.map('map').setView([17.385, 78.4867], 11);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-let markers = L.layerGroup().addTo(map), routeLayer = null, origin = null, centers = [];
 
-api('/categories').then((cats) => {
-  document.getElementById('category').innerHTML += cats.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
-}).catch(() => {});
+document.getElementById('footer-year').textContent =
+  new Date().getFullYear();
+
+
+// CATEGORY HELPERS
+
+let availableCategories = [];
+
+function categoryIcon(name) {
+  const value = name.toLowerCase();
+
+  if (value.includes('phone') || value.includes('mobile')) return '📱';
+  if (value.includes('laptop') || value.includes('computer')) return '💻';
+  if (value.includes('battery')) return '🔋';
+  if (value.includes('charger') || value.includes('cable')) return '🔌';
+  if (value.includes('television') || value.includes('tv')) return '📺';
+  if (value.includes('printer')) return '🖨️';
+
+  return '♻';
+}
+
+function renderCategoryCards(categories) {
+  const container = document.getElementById('category-cards');
+
+  if (!categories.length) {
+    container.innerHTML =
+      '<p class="muted">Categories are not available right now.</p>';
+    return;
+  }
+
+  container.innerHTML = categories.map(c => `
+    <button class="category-card" type="button"
+      data-category="${esc(String(c.id))}">
+      <span class="category-icon">${categoryIcon(c.name)}</span>
+      <span class="category-name">${esc(c.name)}</span>
+      <span class="category-link">Find centres →</span>
+    </button>
+  `).join('');
+
+  container.querySelectorAll('.category-card').forEach(button => {
+    button.addEventListener('click', () => {
+      document.getElementById('category').value =
+        button.dataset.category;
+
+      document.getElementById('search-section').scrollIntoView({
+        behavior: 'smooth'
+      });
+
+      document.getElementById('q').focus();
+    });
+  });
+}
+
+
+// MAP INITIALIZATION
+
+const map = L.map('map').setView([17.385, 78.4867], 11);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let markers = L.layerGroup().addTo(map);
+let routeLayer = null;
+let origin = null;
+let centers = [];
+let mapBounds = null;
+
+const mapView = document.getElementById('map-view');
+
+async function openMap() {
+  mapView.hidden = false;
+  document.getElementById('open-map').hidden = true;
+
+  await new Promise(resolve => setTimeout(resolve, 120));
+
+  map.invalidateSize();
+
+  if (mapBounds) {
+    map.fitBounds(mapBounds, {
+      padding: [30, 30],
+      maxZoom: 14
+    });
+  }
+}
+
+document.getElementById('open-map').addEventListener('click', openMap);
+
+document.getElementById('close-map').addEventListener('click', () => {
+  mapView.hidden = true;
+  document.getElementById('open-map').hidden = false;
+});
+
+
+// LOAD CATEGORIES
+
+api('/categories')
+  .then(cats => {
+    availableCategories = Array.isArray(cats) ? cats : [];
+
+    document.getElementById('category').innerHTML =
+      '<option value="">All categories</option>' +
+      availableCategories.map(c =>
+        `<option value="${esc(String(c.id))}">${esc(c.name)}</option>`
+      ).join('');
+
+    renderCategoryCards(availableCategories);
+  })
+  .catch(e => {
+    console.error('Could not load categories:', e.message);
+    document.getElementById('category-cards').innerHTML =
+      '<p class="muted">Could not load categories. Please refresh the page.</p>';
+  });
+
+
+// SEARCH CENTRES
 
 async function search(params) {
   showMsg('msg', '');
+
   const qs = new URLSearchParams(params);
   const cat = document.getElementById('category').value;
+
   if (cat) qs.set('category', cat);
+
   qs.set('radius', document.getElementById('radius').value);
+
+  const searchButton = document.getElementById('search');
+  searchButton.disabled = true;
+  searchButton.textContent = 'Searching...';
+
   try {
     const data = await api('/centers/nearby?' + qs);
-    origin = data.origin; centers = data.centers;
+
+    origin = data.origin;
+    centers = Array.isArray(data.centers) ? data.centers : [];
+
     render();
-  } catch (e) { showMsg('msg', e.message); }
+
+    document.getElementById('results-section').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
+  } catch (e) {
+    showMsg('msg', e.message);
+  } finally {
+    searchButton.disabled = false;
+    searchButton.textContent = 'Find centres →';
+  }
 }
+
+
+// RENDER MAP AND RESULTS
 
 function render() {
   markers.clearLayers();
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
-  L.circleMarker([origin.lat, origin.lng], { radius: 8, color: '#0b4a8f', fillOpacity: .8 }).addTo(markers).bindPopup('Your search location');
-  const bounds = [[origin.lat, origin.lng]];
-  centers.forEach((c) => { L.marker([c.lat, c.lng]).addTo(markers).bindPopup(esc(c.name)); bounds.push([c.lat, c.lng]); });
-  map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+
+  if (routeLayer) {
+    map.removeLayer(routeLayer);
+    routeLayer = null;
+  }
+
+  mapBounds = null;
+
+  if (origin) {
+    L.circleMarker([origin.lat, origin.lng], {
+      radius: 8,
+      color: '#0b4a8f',
+      fillOpacity: .8
+    })
+      .addTo(markers)
+      .bindPopup('Your search location');
+
+    const bounds = [[origin.lat, origin.lng]];
+
+    centers.forEach(c => {
+      if (c.lat == null || c.lng == null) return;
+
+      L.marker([c.lat, c.lng])
+        .addTo(markers)
+        .bindPopup(esc(c.name));
+
+      bounds.push([c.lat, c.lng]);
+    });
+
+    mapBounds = bounds;
+
+    if (!mapView.hidden) {
+      map.fitBounds(bounds, {
+        padding: [30, 30],
+        maxZoom: 14
+      });
+    }
+  }
+
   const u = getUser();
-  document.getElementById('results').innerHTML = centers.length ? centers.map((c) => `
-    <div class="card">
-      <strong>${esc(c.name)}</strong> <span class="muted">&middot; ${c.distance_km} km away</span><br>
-      <span class="muted">${esc(c.address)}${c.pincode ? ' - ' + esc(c.pincode) : ''}${c.phone ? ' &middot; ' + esc(c.phone) : ''}</span>
-      <div style="margin-top:6px">${c.categories.map((n) => `<span class="badge">${esc(n)}</span>`).join('')}</div>
-      <div style="margin-top:6px">Pickup ${yesNo(c.pickup_available)} Drop-off ${yesNo(c.dropoff_available)}</div>
-      <div class="actions">
-        <button class="secondary" onclick="showRoute('${c.id}')">Show route</button>
-        <a class="btn" href="${u && u.role === 'user' ? '/user-dashboard.html?center=' + c.id : '/login.html'}">Request disposal</a>
+
+  document.getElementById('results').innerHTML = centers.length
+    ? centers.map(c => `
+      <article class="card centre-card">
+        <div class="centre-card-top">
+          <span class="centre-label">COLLECTION CENTRE</span>
+          <span class="centre-pin">⌖</span>
+        </div>
+
+        <h3>${esc(c.name)}</h3>
+
+        <p class="muted">
+          ${esc(c.address || '')}
+          ${c.pincode ? ' · ' + esc(c.pincode) : ''}
+        </p>
+
+        <p class="centre-distance">
+          <strong>${Number(c.distance_km).toFixed(2)} km away</strong>
+          ${c.phone ? ' · ' + esc(c.phone) : ''}
+        </p>
+
+        <div class="centre-categories">
+          ${(Array.isArray(c.categories) ? c.categories : []).map(n =>
+            `<span class="badge">${esc(n)}</span>`
+          ).join('')}
+        </div>
+
+        <div class="centre-services">
+          <span>Pickup ${yesNo(c.pickup_available)}</span>
+          <span>Drop-off ${yesNo(c.dropoff_available)}</span>
+        </div>
+
+        <div class="actions">
+          <button class="secondary" onclick="showRoute('${c.id}')">
+            Show route
+          </button>
+
+          <a class="btn"
+            href="${u && u.role === 'user'
+              ? '/user-dashboard.html?center=' + encodeURIComponent(c.id)
+              : '/login.html'}">
+            Request disposal
+          </a>
+        </div>
+
+        <div id="route-${c.id}" class="muted route-info"></div>
+      </article>
+    `).join('')
+    : `
+      <div class="card no-results">
+        <span>⌖</span>
+        <h3>No centres found</h3>
+        <p class="muted">
+          Try a larger search radius or choose another location or category.
+        </p>
       </div>
-      <div id="route-${c.id}" class="muted"></div>
-    </div>`).join('') : '<div class="card">No verified centers found nearby for that search. Try a larger radius or another category.</div>';
+    `;
 }
 
+
+// SHOW ROUTE
+
 async function showRoute(id) {
-  const c = centers.find((x) => x.id === id);
+  const c = centers.find(x => x.id === id);
+
+  if (!c || !origin) return;
+
+  if (mapView.hidden) {
+    await openMap();
+  }
+
+  const routeInfo = document.getElementById('route-' + id);
+  routeInfo.textContent = 'Loading route...';
+
   try {
-    const r = await api(`/geo/route?fromLat=${origin.lat}&fromLng=${origin.lng}&toLat=${c.lat}&toLng=${c.lng}`);
+    const r = await api(
+      `/geo/route?fromLat=${origin.lat}&fromLng=${origin.lng}&toLat=${c.lat}&toLng=${c.lng}`
+    );
+
     if (routeLayer) map.removeLayer(routeLayer);
-    routeLayer = L.geoJSON(r.geometry, { style: { color: '#1f7a4d', weight: 5 } }).addTo(map);
-    map.fitBounds(routeLayer.getBounds(), { padding: [30, 30] });
-    document.getElementById('route-' + id).textContent = `Driving: ${r.distanceKm} km, about ${r.durationMin} min`;
-    document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
-  } catch (e) { document.getElementById('route-' + id).textContent = e.message; }
+
+    routeLayer = L.geoJSON(r.geometry, {
+      style: {
+        color: '#176b45',
+        weight: 5
+      }
+    }).addTo(map);
+
+    map.fitBounds(routeLayer.getBounds(), {
+      padding: [30, 30]
+    });
+
+    routeInfo.textContent =
+      `Route distance: ${r.distanceKm} km · Approx. ${r.durationMin} min`;
+
+    document.getElementById('map').scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+  } catch (e) {
+    routeInfo.textContent = e.message;
+  }
 }
+
+
+// SEARCH BUTTON
 
 document.getElementById('search').onclick = () => {
   const v = document.getElementById('q').value.trim();
-  if (!v) return showMsg('msg', 'Enter a location or PIN code first');
+
+  if (!v) {
+    return showMsg('msg', 'Enter a location or PIN code first');
+  }
+
   search(/^\d{6}$/.test(v) ? { pincode: v } : { q: v });
 };
-document.getElementById('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('search').click(); });
+
+
+// ENTER KEY SEARCH
+
+document.getElementById('q').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    document.getElementById('search').click();
+  }
+});
+
+
+// USE MY LOCATION
+
 document.getElementById('locate').onclick = () => {
-  if (!navigator.geolocation) return showMsg('msg', 'Geolocation is not supported by your browser');
+  if (!navigator.geolocation) {
+    return showMsg('msg', 'Geolocation is not supported by your browser');
+  }
+
+  const button = document.getElementById('locate');
+  button.disabled = true;
+  button.textContent = 'Locating...';
+
   navigator.geolocation.getCurrentPosition(
-    (p) => search({ lat: p.coords.latitude, lng: p.coords.longitude }),
-    () => showMsg('msg', 'Could not get your location. Type a location or PIN code instead.'));
+    p => {
+      search({
+        lat: p.coords.latitude,
+        lng: p.coords.longitude
+      }).finally(() => {
+        button.disabled = false;
+        button.textContent = '◎ Use my location';
+      });
+    },
+    () => {
+      showMsg('msg',
+        'Could not get your location. Type a location or PIN code instead.'
+      );
+      button.disabled = false;
+      button.textContent = '◎ Use my location';
+    }
+  );
 };
 </script>
 </body>
