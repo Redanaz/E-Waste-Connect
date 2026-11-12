@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin - E-Waste Connect</title><link rel="stylesheet" href="/css/styles.css"><script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("ewaste-theme")==="dark"?"dark":"light")}catch(e){}</script></head>
 <body>
 <header id="nav"></header>
 <main>
@@ -36,5 +36,6 @@ async function verify(id, verified) {
 }
 Promise.all([loadCenters(), loadRequests(), loadUsers()]).catch((e) => showMsg('msg', e.message));
 </script>
+<script src="/js/theme.js"></script>
 </body>
 </html>
