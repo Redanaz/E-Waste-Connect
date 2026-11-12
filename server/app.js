@@ -15,6 +15,10 @@ app.use('/api/geo', require('./routes/geo'));
 app.use('/api/centers', require('./routes/centers'));
 app.use('/api/requests', require('./routes/requests'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/feedback', require('./routes/feedback'));
+app.use('/api/certificates', require('./routes/certificates'));
+app.use('/api/impact', require('./routes/impact'));
 app.use('/api', (req, res, next) => next(new HttpError(404, 'Not found')));
 
 app.use(errorHandler);

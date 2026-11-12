@@ -2,6 +2,7 @@ const router = require('express').Router();
 const supabase = require('../config/supabase');
 const { verifyToken, requireRole } = require('../middleware/auth');
 const { HttpError, asyncHandler, must } = require('../utils/errors');
+const { notify, STATUS_NOTICE } = require('../services/notify');
 
 const TRANSITIONS = {
   requested: ['accepted', 'rejected'],
@@ -19,7 +20,7 @@ router.post('/', requireRole('user'), asyncHandler(async (req, res) => {
   if (!(quantity > 0)) throw new HttpError(400, 'quantity must be at least 1');
 
   const center = must(await supabase.from('centers')
-    .select('id,is_verified,pickup_available,dropoff_available').eq('id', center_id).maybeSingle());
+    .select('id,name,admin_id,is_verified,pickup_available,dropoff_available').eq('id', center_id).maybeSingle());
   if (!center || !center.is_verified) throw new HttpError(404, 'Center not found');
   if (mode === 'pickup' && !center.pickup_available) throw new HttpError(400, 'This center does not offer pickup');
   if (mode === 'dropoff' && !center.dropoff_available) throw new HttpError(400, 'This center does not accept drop-off');
@@ -33,6 +34,17 @@ router.post('/', requireRole('user'), asyncHandler(async (req, res) => {
     user_id: req.user.id, center_id, category_id, mode, quantity, description,
     pickup_address: mode === 'pickup' ? pickup_address : null
   }).select().single());
+
+  must(await supabase.from('request_status_history')
+    .insert({ request_id: created.id, status: 'requested', changed_by: req.user.id }));
+
+  await notify([
+    { user_id: req.user.id, request_id: created.id, title: 'Request submitted',
+      body: `Your request to ${center.name} was submitted successfully.`, kind: 'info', href: '/track-requests.html' },
+    { user_id: center.admin_id, request_id: created.id, title: 'New request received',
+      body: 'A user submitted a new disposal request to your center.', kind: 'info', href: '/center-dashboard.html' }
+  ]);
+
   res.status(201).json(created);
 }));
 
@@ -52,7 +64,8 @@ router.get('/center', requireRole('center_admin'), asyncHandler(async (req, res)
 
 router.patch('/:id/status', requireRole('center_admin'), asyncHandler(async (req, res) => {
   const { status } = req.body;
-  const reqRow = must(await supabase.from('requests').select('id,status,centers(admin_id)').eq('id', req.params.id).maybeSingle());
+  const reqRow = must(await supabase.from('requests')
+    .select('id,status,user_id,centers(admin_id,name)').eq('id', req.params.id).maybeSingle());
   if (!reqRow) throw new HttpError(404, 'Request not found');
   if (reqRow.centers.admin_id !== req.user.id) throw new HttpError(403, 'This request is not for your center');
   if (!(TRANSITIONS[reqRow.status] || []).includes(status)) {
@@ -60,7 +73,30 @@ router.patch('/:id/status', requireRole('center_admin'), asyncHandler(async (req
   }
   const updated = must(await supabase.from('requests')
     .update({ status, updated_at: new Date().toISOString() }).eq('id', reqRow.id).select('id,status').single());
+
+  must(await supabase.from('request_status_history')
+    .insert({ request_id: reqRow.id, status, changed_by: req.user.id, note: req.body.note || null }));
+
+  const notice = STATUS_NOTICE[status];
+  await notify({
+    user_id: reqRow.user_id, request_id: reqRow.id, title: notice.title,
+    body: notice.body(reqRow.centers.name), kind: notice.kind,
+    href: status === 'completed' ? '/certificates.html' : '/track-requests.html'
+  });
+
   res.json(updated);
+}));
+
+router.get('/:id/history', asyncHandler(async (req, res) => {
+  const r = must(await supabase.from('requests')
+    .select('id,user_id,status,centers(admin_id)').eq('id', req.params.id).maybeSingle());
+  if (!r) throw new HttpError(404, 'Request not found');
+  const allowed = req.user.role === 'system_admin' || r.user_id === req.user.id
+    || (req.user.role === 'center_admin' && r.centers.admin_id === req.user.id);
+  if (!allowed) throw new HttpError(403, 'You do not have access to this request');
+  const history = must(await supabase.from('request_status_history')
+    .select('status,note,created_at').eq('request_id', r.id).order('created_at'));
+  res.json({ request_id: r.id, current_status: r.status, history });
 }));
 
 module.exports = router;
